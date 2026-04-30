@@ -70,24 +70,18 @@
   </head>
   <body>
     <main class="container">
-      <section id="password-section" class="card">
-        <h1>マラソン大会調査フォーム</h1>
-        <p class="lead">本調査フォームは関係者専用です。事前に通知されたパスワードを入力してください。</p>
-        <label for="password-input">パスワード</label>
-        <input id="password-input" type="password" autocomplete="current-password" placeholder="パスワードを入力" />
-        <button id="password-submit" class="btn btn-primary">フォームを表示</button>
-        <p id="password-error" class="error hidden"></p>
-      </section>
+      <section id="app-section" class="card">
+        <h2>大会情報確認と回答</h2>
+        <p class="lead">
+          このページでは、対象大会について過去に取得済みの大会情報をご確認いただき、必要に応じて修正内容をご入力ください。続いて、対象年度における心停止または心肺停止の発生有無をご回答ください。他大会の情報は表示されません。
+        </p>
 
     <p>
       本ページは、日本陸上競技連盟医事委員会関連の調査において、
       各大会の心肺停止発生状況および大会基本情報をご回答いただくための案内ページです。
     </p>
-      <section id="app-section" class="card hidden">
-        <h2>大会情報確認と回答</h2>
-        <p class="lead">
-          このページでは、対象大会について過去に取得済みの大会情報をご確認いただき、必要に応じて修正内容をご入力ください。続いて、対象年度における心停止または心肺停止の発生有無をご回答ください。他大会の情報は表示されません。
-        </p>
+        <div id="loading" class="hidden">大会情報を読み込み中です…</div>
+        <p id="app-error" class="error hidden"></p>
 
     <h2>回答の流れ</h2>
     <ul>
@@ -95,23 +89,16 @@
       <li>次に、「大会情報入力シート」にアクセスし、未入力項目をご記入ください。すでに以前の調書でご回答いただいた情報はシートに反映しております。</li>
       <li>不明な項目がある場合は、分かる範囲でご回答ください。後日確認させていただく場合があります。</li>
     </ul>
-        <div id="loading" class="hidden">大会情報を読み込み中です…</div>
-        <p id="app-error" class="error hidden"></p>
-
-    <div class="buttons">
-      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScC1JpqapVuZKqzz8RGUNJ37VHDKwkx1Bv8M7r-KJExQn-Flw/viewform" target="_blank" rel="noopener noreferrer">
-        心肺停止発生確認フォーム
-      </a>
         <form id="survey-form" class="hidden">
           <section class="subsection">
             <h3>対象大会情報（取得済み）</h3>
             <dl id="race-summary" class="summary-list"></dl>
           </section>
 
-      <a class="btn secondary" href="https://docs.google.com/spreadsheets/d/1odpbX4hhhHCs2LDNNUtMCnBwJmexDnOCWH2wNno1wRc/edit?gid=1136053637#gid=1136053637" target="_blank" rel="noopener noreferrer">
-        大会情報入力シート
+    <div class="buttons">
+      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScC1JpqapVuZKqzz8RGUNJ37VHDKwkx1Bv8M7r-KJExQn-Flw/viewform" target="_blank" rel="noopener noreferrer">
+        心肺停止発生確認フォーム
       </a>
-    </div>
           <section class="subsection">
             <h3>既存情報の確認</h3>
             <div class="button-row">
@@ -121,30 +108,25 @@
             <input type="hidden" id="confirmed-existing-data" value="true" />
           </section>
 
+      <a class="btn secondary" href="https://docs.google.com/spreadsheets/d/1odpbX4hhhHCs2LDNNUtMCnBwJmexDnOCWH2wNno1wRc/edit?gid=1136053637#gid=1136053637" target="_blank" rel="noopener noreferrer">
+        大会情報入力シート
+      </a>
+    </div>
+          <section id="correction-fields" class="subsection hidden">
+            <h3>修正値の入力</h3>
+            <label for="participants-final">参加者数（最終）</label><input id="participants-final" type="number" min="0" inputmode="numeric" />
+            <label for="finishers-final">完走者数（最終）</label><input id="finishers-final" type="number" min="0" inputmode="numeric" />
+            <label for="men-percent-final">男性割合（%）（最終）</label><input id="men-percent-final" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
+            <label for="men50-percent-final">50歳以上男性割合（%）（最終）</label><input id="men50-percent-final" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
+            <label for="men60-percent-final">60歳以上男性割合（%）（最終）</label><input id="men60-percent-final" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
+          </section>
+
     <p class="note">
       ※ フォームおよび入力シートへのアクセス方法は、送付文書の案内に従ってください。<br>
       ※ ご不明な点がある場合は、案内文書記載の連絡先までお問い合わせください。
     </p>
   </div>
 </body>
-          <section id="correction-fields" class="subsection hidden">
-            <h3>修正値の入力</h3>
-            <label for="participants-final">参加者数（最終）</label>
-            <input id="participants-final" type="number" min="0" inputmode="numeric" />
-
-            <label for="finishers-final">完走者数（最終）</label>
-            <input id="finishers-final" type="number" min="0" inputmode="numeric" />
-
-            <label for="men-percent-final">男性割合（%）（最終）</label>
-            <input id="men-percent-final" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
-
-            <label for="men50-percent-final">50歳以上男性割合（%）（最終）</label>
-            <input id="men50-percent-final" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
-
-            <label for="men60-percent-final">60歳以上男性割合（%）（最終）</label>
-            <input id="men60-percent-final" type="number" min="0" max="100" step="0.1" inputmode="decimal" />
-          </section>
-
           <section class="subsection">
             <h3>心停止または心肺停止の発生有無</h3>
             <div class="button-row">
@@ -156,8 +138,7 @@
 
           <section id="sca-fields" class="subsection hidden">
             <h3>心停止・心肺停止 詳細</h3>
-            <label for="sca-count">件数 <span class="required">*</span></label>
-            <input id="sca-count" type="number" min="1" inputmode="numeric" />
+            <label for="sca-count">件数 <span class="required">*</span></label><input id="sca-count" type="number" min="1" inputmode="numeric" />
             <label for="aed-used">AED使用</label><select id="aed-used"><option value="">選択してください</option><option value="あり">あり</option><option value="なし">なし</option><option value="不明">不明</option></select>
             <label for="rosc">ROSC</label><select id="rosc"><option value="">選択してください</option><option value="あり">あり</option><option value="なし">なし</option><option value="不明">不明</option></select>
             <label for="death">死亡有無</label><select id="death"><option value="">選択してください</option><option value="あり">あり</option><option value="なし">なし</option><option value="不明">不明</option></select>
@@ -165,8 +146,7 @@
           </section>
 
           <section class="subsection">
-            <label for="respondent-notes">回答者メモ（任意）</label>
-            <textarea id="respondent-notes" rows="3" placeholder="必要な補足があれば入力"></textarea>
+            <label for="respondent-notes">回答者メモ（任意）</label><textarea id="respondent-notes" rows="3" placeholder="必要な補足があれば入力"></textarea>
           </section>
 
           <button type="button" id="review-button" class="btn btn-primary">確認画面へ</button>
