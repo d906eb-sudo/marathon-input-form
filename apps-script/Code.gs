@@ -1,4 +1,4 @@
-const SHEET_ID = 'REPLACE_WITH_SPREADSHEET_ID';
+const SHEET_ID = '1lwMVVUfLBchS42FJ05T9iFid28wv2EvfKYFHsUBxDgg';
 const SHEET_MASTER = 'race_master';
 const SHEET_RACE_RESPONSE = 'race_response';
 const SHEET_SCA_RESPONSE = 'sca_response';
