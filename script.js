@@ -1,5 +1,5 @@
 const SIMPLE_PASSWORD = "marathonmed";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/REPLACE_WITH_YOUR_DEPLOYMENT_ID/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynXzNPQlzBGtyEWA4w3zEonxXOz9hoUAnRB1BChIMjjpQPdCVCTAtpX1ff86h4AGdlsA/exec";
 
 const state = { surveyId: null, token: null, raceData: null };
 const $ = (id) => document.getElementById(id);
