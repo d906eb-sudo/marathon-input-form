@@ -4,6 +4,7 @@
 静的フロントエンド + Google Apps Script + Google Sheetsで運用します。
 
 ## 重要事項
+- 回答者はGoogleスプレッドシートを直接開かず、このフォーム内で大会情報確認と心停止発生有無の回答を行います。
 - アクセス制限は `survey_id + token` を含む専用URL方式です。
 - この方式はURLを知っている人がアクセスできるため、URLの転送・再配布には注意してください。
 - `token` は `race_master` にのみ保存し、`race_response` / `sca_response` には保存しません。
