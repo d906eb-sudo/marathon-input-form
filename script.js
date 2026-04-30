@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/1lwMVVUfLBchS42FJ05T9iFid28wv2EvfKYFHsUBxDgg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlRHVThMucXNv8aKe0rUztDhcZXQ-34-FLdmDzw8cgEuI0qLWJitqRmu_V7x2ljr6whw/exec";
 const state = { raceId: null, token: null, races: [] };
 const $ = (id) => document.getElementById(id);
 const show = (id) => $(id).classList.remove("hidden");
