@@ -4,8 +4,8 @@
 静的フロントエンド + Google Apps Script + Google Sheetsで運用します。
 
 ## 重要事項
-- 簡易パスワードは `marathonmed` です（関係者向け簡易ゲート）。
-- 静的サイト上のパスワードは**強固な認証ではありません**。
+- アクセス制限は `survey_id + token` を含む専用URL方式です。
+- この方式はURLを知っている人がアクセスできるため、URLの転送・再配布には注意してください。
 - `token` は `race_master` にのみ保存し、`race_response` / `sca_response` には保存しません。
 
 ## 公開方法（GitHub Pages / 新規リポジトリ `marathon-input-form`）
@@ -83,17 +83,14 @@
 - 「修正する」の場合、入力値をfinal値として送信
 
 ## 手動テスト項目
-1. パスワード未入力ではフォーム非表示
-2. 誤パスワードでフォーム非表示
-3. `marathonmed` で表示
-4. `survey_id` なしでエラー
-5. `token` なしでエラー
-6. 無効 `survey_id/token` でエラー
-7. 有効な `survey_id/token` で該当大会のみ表示
-8. 心停止なしで送信可
-9. 心停止ありで件数必須
-10. race_response/sca_responseに分離保存
-11. ブラウザにSheets編集権限や秘密情報がない
+1. `survey_id` なしでエラー表示（専用URL案内）
+2. `token` なしでエラー表示（専用URL案内）
+3. 無効 `survey_id/token` で「専用URLが無効です」表示
+4. 有効な `survey_id/token` で該当大会のみ表示
+5. 心停止なしで送信可
+6. 心停止ありで件数必須
+7. race_response/sca_responseに分離保存
+8. ブラウザにSheets編集権限や秘密情報がない
 
 ## セキュリティ強化案
 - Googleログイン必須化
