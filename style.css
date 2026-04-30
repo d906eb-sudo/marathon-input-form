@@ -8,3 +8,6 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 .seg{display:inline-flex;gap:4px;white-space:nowrap}.seg .btn{padding:7px 10px;font-size:13px}
 .detail{margin-top:6px;padding:8px;border:1px dashed var(--border);border-radius:8px;background:#fcfdff}.hidden{display:none!important}.error{color:var(--danger);margin-top:8px}.button-row{display:flex;gap:8px}
 @media(max-width:767px){th,td{font-size:13px;padding:6px}.button-row{flex-direction:column}}
+
+.notice{border:1px solid var(--border);background:#fbfcfe;border-radius:8px;padding:10px;margin:8px 0}.notice ul{margin:6px 0 0 18px;padding:0}.notice li{margin:6px 0;line-height:1.5}
+
