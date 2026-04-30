@@ -68,10 +68,23 @@
     </p>
 
     <h2>回答の流れ</h2>
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>マラソン大会調査フォーム</title><link rel="stylesheet" href="style.css" /></head>
+<body><main class="container"><section class="card">
+  <h2 id="race-title">大会情報確認と回答</h2><p id="race-subtitle" class="lead"></p>
+  <div class="notice">
+    <p>本アンケート調査は、陸連公認マラソン大会における心肺停止事例を収集し、リスクの高い大会の特徴を明らかにするための予測モデル構築を目的としています。以下の説明をご確認のうえ、ご回答をお願いいたします。</p>
     <ul>
       <li>まず「心肺停止発生確認フォーム」にご回答ください。</li>
       <li>次に、「大会情報入力シート」にアクセスし、未入力項目をご記入ください。すでに以前の調書でご回答いただいた情報はシートに反映しております。</li>
       <li>不明な項目がある場合は、分かる範囲でご回答ください。後日確認させていただく場合があります。</li>
+      <li>大会参加者数について： ※参加者数はスタートラインを超えたランナーの数でエントリー数ではありません。</li>
+      <li>男性（50歳超男性割合、60歳超男性割合含む）の割合は100％単位でご記入ください（小数点第一位）。<br>※割合は参加者数に対する割合ですが、完走者数で代用可能です（例：男性完走者数／完走者数）<br>※すでに記入済みのデータは過去にご報告いただいたデータ、ないしrunnet.jpの記録から取得しています。</li>
+      <li>心肺停止の定義：レース中またはフィニッシュ直後に急に倒れ、意識消失を伴い、①胸骨圧迫（心臓マッサージ）を要した、または②AEDによる解析（装着・作動を含む）が行われた症例とします。<br>※胸骨圧迫を行わず自然に回復した症例は含みません。<br>※AED装着前に胸骨圧迫のみで回復した症例は含みます。<br>※判断に迷う症例は含めてご回答ください。</li>
+      <li>本フォームの回答内容は、研究担当者以外が個別に閲覧することはありません。</li>
+      <li>過去にご報告いただいた内容についても、確認のため改めてご回答をお願いいたします。</li>
+      <li>対象大会期間：<br>フルマラソン：2011年4月1日～2026年3月31日<br>ハーフマラソン：2014年4月1日～2026年3月31日<br>※便宜上、30km大会はハーフマラソンとしてご回答ください。<br>※同一大会でフルとハーフが同時開催された場合は、別大会としてご回答ください。<br>※同日開催の3㎞、5㎞、10㎞、クオーターマラソン、20㎞レースは対象外になります。<br>※非公認大会は解析対象外としております。<br>※2020年4月～2022年3月の大会は解析対象外としていますが、開催状況の確認のためご回答ください。</li>
+      <li>発生事例がある場合は、後日詳細確認のためご連絡する可能性があります。可能であれば連絡先をご記入ください。</li>
     </ul>
 
     <div class="buttons">
@@ -88,13 +101,10 @@
       ※ フォームおよび入力シートへのアクセス方法は、送付文書の案内に従ってください。<br>
       ※ ご不明な点がある場合は、案内文書記載の連絡先までお問い合わせください。
     </p>
+    <p>フォーム回答についてご質問がある場合は、日本陸連医事委員 加藤 穣（かとう じょう）までご連絡ください。<br>email: d906eb@yahoo.co.jp</p>
   </div>
 </body>
 </html>
-<!doctype html>
-<html lang="ja"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>マラソン大会調査フォーム</title><link rel="stylesheet" href="style.css" /></head>
-<body><main class="container"><section class="card">
-  <h2 id="race-title">大会情報確認と回答</h2><p id="race-subtitle" class="lead"></p>
   <div id="loading" class="hidden">大会情報を読み込み中です…</div><p id="app-error" class="error hidden"></p>
   <form id="survey-form" class="hidden">
     <section class="subsection"><h3>大会情報確認</h3><div class="table-wrap"><table><thead><tr><th>年</th><th>開催状況</th><th>参加者数</th><th>完走者数</th><th>男性割合（%）</th><th>50歳超男性割合（%）</th><th>60歳超男性割合（%）</th><th>修正</th></tr></thead><tbody id="race-tbody"></tbody></table></div></section>
