@@ -2,7 +2,6 @@ const SHEET_ID = '1lwMVVUfLBchS42FJ05T9iFid28wv2EvfKYFHsUBxDgg';
 const SHEET_MASTER = 'race_master';
 const SHEET_RACE_RESPONSE = 'race_response';
 const SHEET_SCA_RESPONSE = 'sca_response';
-
 function doGet(e) {
   try {
     const raceId = (e.parameter.race_id || '').trim();
@@ -46,4 +45,4 @@ function findRowsByRaceToken_(raceId, token) {
   const i = { survey_id:h.indexOf('survey_id'), token:h.indexOf('token'), Race_ID:h.indexOf('Race_ID'), Race_Name:h.indexOf('Race_Name'), Year:h.indexOf('Year'), Held:h.indexOf('Held'), Participants_existing:h.indexOf('Participants_existing'), Finishers_existing:h.indexOf('Finishers_existing'), Men_percent_existing:h.indexOf('Men_percent_existing'), Men50_percent_existing:h.indexOf('Men50_percent_existing'), Men60_percent_existing:h.indexOf('Men60_percent_existing') };
   return values.slice(1).filter((r) => String(r[i.Race_ID]).trim() === raceId && String(r[i.token]).trim() === token).map((r) => ({ survey_id:String(r[i.survey_id]||''), Race_ID:String(r[i.Race_ID]||''), Race_Name:String(r[i.Race_Name]||''), Year:String(r[i.Year]||''), Held:String(r[i.Held]||''), Participants_existing:String(r[i.Participants_existing]||''), Finishers_existing:String(r[i.Finishers_existing]||''), Men_percent_existing:String(r[i.Men_percent_existing]||''), Men50_percent_existing:String(r[i.Men50_percent_existing]||''), Men60_percent_existing:String(r[i.Men60_percent_existing]||'') }));
 }
-function jsonOutput(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
+function jsonOutput(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
