@@ -1,92 +1,78 @@
-const SIMPLE_PASSWORD = "marathonmed";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynXzNPQlzBGtyEWA4w3zEonxXOz9hoUAnRB1BChIMjjpQPdCVCTAtpX1ff86h4AGdlsA/exec";
-
-const state = { surveyId: null, token: null, raceData: null };
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/1lwMVVUfLBchS42FJ05T9iFid28wv2EvfKYFHsUBxDgg/exec";
+const state = { raceId: null, token: null, races: [] };
 const $ = (id) => document.getElementById(id);
-const hide = (id) => $(id).classList.add("hidden");
 const show = (id) => $(id).classList.remove("hidden");
-function showError(m) { $("app-error").textContent = m; show("app-error"); }
-function hideError() { $("app-error").textContent = ""; hide("app-error"); }
+const hide = (id) => $(id).classList.add("hidden");
 const fmt = (v) => (v === undefined || v === null || v === "" ? "未入力" : String(v));
+function showError(m){$("app-error").textContent=m;show("app-error");}
 
-function parseQuery() {
-  const params = new URLSearchParams(window.location.search);
-  state.surveyId = params.get("survey_id");
-  state.token = params.get("token");
-}
-
-async function fetchRaceData() {
-  const url = new URL(APPS_SCRIPT_URL);
-  url.searchParams.set("survey_id", state.surveyId);
-  url.searchParams.set("token", state.token);
-  const res = await fetch(url.toString());
-  const data = await res.json();
-  if (!res.ok || !data.ok) {
-    throw new Error("専用URLが無効です。案内文書をご確認ください");
-  }
-  return data.race;
+function parseQuery(){const p=new URLSearchParams(location.search);state.raceId=p.get("race_id");state.token=p.get("token");}
+async function fetchRaceRows(){
+  const url=new URL(APPS_SCRIPT_URL);url.searchParams.set("race_id",state.raceId);url.searchParams.set("token",state.token);
+  const r=await fetch(url.toString());const d=await r.json();if(!r.ok||!d.ok) throw new Error("専用URLが無効です。案内文書をご確認ください");
+  return d.races;
 }
 
-function renderRaceSummary(r) {
-  $("race-summary").innerHTML = [
-    ["大会名", r.Race_Name], ["年度", r.Year], ["開催有無", r.Held],
-    ["参加者数（既存）", r.Participants_existing], ["完走者数（既存）", r.Finishers_existing],
-    ["男性割合（既存）", `${fmt(r.Men_percent_existing)} %`],
-    ["50歳以上男性割合（既存）", `${fmt(r.Men50_percent_existing)} %`],
-    ["60歳以上男性割合（既存）", `${fmt(r.Men60_percent_existing)} %`],
-  ].map(([k,v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+function renderCards(){
+  const container=$("year-cards");
+  $("race-title").textContent=`${state.races[0].Race_Name} の年度別回答`;
+  container.innerHTML=state.races.map((r,i)=>`
+  <section class="subsection"><h3>${fmt(r.Year)}年度（survey_id: ${fmt(r.survey_id)}）</h3>
+    <label><input type="checkbox" id="confirmed-${i}" checked /> この内容で正しい（既存値を最終値に使用）</label>
+    <div id="edit-${i}" class="hidden">
+      <label>Held（最終）</label><input id="held-${i}" value="${fmt(r.Held)}" />
+      <label>参加者数（最終）</label><input id="p-${i}" type="number" min="0" value="${fmt(r.Participants_existing)}" />
+      <label>完走者数（最終）</label><input id="f-${i}" type="number" min="0" value="${fmt(r.Finishers_existing)}" />
+      <label>男性割合（%）（最終）</label><input id="m-${i}" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men_percent_existing)}" />
+      <label>50歳以上男性割合（%）（最終）</label><input id="m50-${i}" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men50_percent_existing)}" />
+      <label>60歳以上男性割合（%）（最終）</label><input id="m60-${i}" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men60_percent_existing)}" />
+    </div>
+    <p>既存値: Held=${fmt(r.Held)}, Participants=${fmt(r.Participants_existing)}, Finishers=${fmt(r.Finishers_existing)}, Men=${fmt(r.Men_percent_existing)}%, Men50=${fmt(r.Men50_percent_existing)}%, Men60=${fmt(r.Men60_percent_existing)}%</p>
+    <div class="button-row"><button type="button" class="btn btn-secondary active" id="sca-no-${i}">発生なし</button><button type="button" class="btn btn-secondary" id="sca-yes-${i}">発生あり</button></div>
+    <input type="hidden" id="sca-${i}" value="false" />
+    <div id="sca-fields-${i}" class="hidden">
+      <label>件数*</label><input id="scac-${i}" type="number" min="1" />
+      <label>AED使用</label><select id="aed-${i}"><option value="">選択してください</option><option>あり</option><option>なし</option><option>不明</option></select>
+      <label>ROSC</label><select id="rosc-${i}"><option value="">選択してください</option><option>あり</option><option>なし</option><option>不明</option></select>
+      <label>死亡有無</label><select id="death-${i}"><option value="">選択してください</option><option>あり</option><option>なし</option><option>不明</option></select>
+      <label>備考</label><textarea id="scan-${i}" rows="2"></textarea>
+    </div>
+    <label>回答者メモ</label><textarea id="note-${i}" rows="2"></textarea>
+  </section>`).join("");
+
+  state.races.forEach((_,i)=>{
+    $("confirmed-"+i).addEventListener("change",e=>$("edit-"+i).classList.toggle("hidden",e.target.checked));
+    $("sca-no-"+i).addEventListener("click",()=>{$("sca-"+i).value="false";hide("sca-fields-"+i);$("sca-no-"+i).classList.add("active");$("sca-yes-"+i).classList.remove("active");});
+    $("sca-yes-"+i).addEventListener("click",()=>{$("sca-"+i).value="true";show("sca-fields-"+i);$("sca-yes-"+i).classList.add("active");$("sca-no-"+i).classList.remove("active");});
+  });
 }
 
-function buildPayload() { /* unchanged core */
-  const r = state.raceData, confirmed = $("confirmed-existing-data").value === "true", scaOccurred = $("sca-occurred").value === "true";
-  return {
-    survey_id: state.surveyId, token: state.token, confirmed_existing_data: confirmed,
-    Participants_existing: r.Participants_existing, Participants_final: confirmed ? r.Participants_existing : $("participants-final").value,
-    Finishers_existing: r.Finishers_existing, Finishers_final: confirmed ? r.Finishers_existing : $("finishers-final").value,
-    Men_percent_existing: r.Men_percent_existing, Men_percent_final: confirmed ? r.Men_percent_existing : $("men-percent-final").value,
-    Men50_percent_existing: r.Men50_percent_existing, Men50_percent_final: confirmed ? r.Men50_percent_existing : $("men50-percent-final").value,
-    Men60_percent_existing: r.Men60_percent_existing, Men60_percent_final: confirmed ? r.Men60_percent_existing : $("men60-percent-final").value,
-    respondent_notes: $("respondent-notes").value, sca_occurred: scaOccurred, sca_count: $("sca-count").value,
-    aed_used: $("aed-used").value, rosc: $("rosc").value, death: $("death").value, sca_notes: $("sca-notes").value,
-  };
-}
-function validate(d) { if (d.sca_occurred && (!d.sca_count || Number(d.sca_count) < 1)) throw new Error("「発生あり」の場合、件数は1以上で入力してください。"); }
-function renderReview(d) {
-  $("review-content").innerHTML = `<div class="summary-list"><div><dt>大会名</dt><dd>${fmt(state.raceData.Race_Name)}</dd></div><div><dt>年度</dt><dd>${fmt(state.raceData.Year)}</dd></div><div><dt>開催有無</dt><dd>${fmt(state.raceData.Held)}</dd></div><div><dt>参加者数（最終）</dt><dd>${fmt(d.Participants_final)}</dd></div><div><dt>完走者数（最終）</dt><dd>${fmt(d.Finishers_final)}</dd></div><div><dt>男性割合（最終）</dt><dd>${fmt(d.Men_percent_final)} %</dd></div><div><dt>50歳以上男性割合（最終）</dt><dd>${fmt(d.Men50_percent_final)} %</dd></div><div><dt>60歳以上男性割合（最終）</dt><dd>${fmt(d.Men60_percent_final)} %</dd></div><div><dt>心停止・心肺停止</dt><dd>${d.sca_occurred ? "発生あり" : "発生なし"}</dd></div></div>`;
-}
-async function submit(d) {
-  const res = await fetch(APPS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d) });
-  const out = await res.json(); if (!res.ok || !out.ok) throw new Error(out.error || "送信に失敗しました。");
+function buildPayload(){
+  const responses=state.races.map((r,i)=>{
+    const confirmed=$("confirmed-"+i).checked, sca=$("sca-"+i).value==="true";
+    const obj={survey_id:r.survey_id,Year:r.Year,Race_ID:r.Race_ID,Race_Name:r.Race_Name,
+      confirmed_existing_data:confirmed,
+      Held: confirmed ? r.Held : $("held-"+i).value,
+      Participants_existing:r.Participants_existing,Participants_final: confirmed ? r.Participants_existing : $("p-"+i).value,
+      Finishers_existing:r.Finishers_existing,Finishers_final: confirmed ? r.Finishers_existing : $("f-"+i).value,
+      Men_percent_existing:r.Men_percent_existing,Men_percent_final: confirmed ? r.Men_percent_existing : $("m-"+i).value,
+      Men50_percent_existing:r.Men50_percent_existing,Men50_percent_final: confirmed ? r.Men50_percent_existing : $("m50-"+i).value,
+      Men60_percent_existing:r.Men60_percent_existing,Men60_percent_final: confirmed ? r.Men60_percent_existing : $("m60-"+i).value,
+      respondent_notes:$("note-"+i).value,sca_occurred:sca,sca_count:$("scac-"+i).value,aed_used:$("aed-"+i).value,rosc:$("rosc-"+i).value,death:$("death-"+i).value,sca_notes:$("scan-"+i).value};
+    if (sca && (!obj.sca_count || Number(obj.sca_count)<1)) throw new Error(`${r.Year}年度: 「発生あり」の場合は件数必須です。`);
+    return obj;
+  });
+  return {race_id:state.raceId,token:state.token,responses};
 }
 
-function setupEvents() {
-  $("confirm-existing").addEventListener("click", () => { $("confirmed-existing-data").value = "true"; hide("correction-fields"); $("confirm-existing").classList.add("active"); $("edit-existing").classList.remove("active"); });
-  $("edit-existing").addEventListener("click", () => { $("confirmed-existing-data").value = "false"; show("correction-fields"); $("edit-existing").classList.add("active"); $("confirm-existing").classList.remove("active"); });
-  $("sca-no").addEventListener("click", () => { $("sca-occurred").value = "false"; hide("sca-fields"); $("sca-no").classList.add("active"); $("sca-yes").classList.remove("active"); });
-  $("sca-yes").addEventListener("click", () => { $("sca-occurred").value = "true"; show("sca-fields"); $("sca-yes").classList.add("active"); $("sca-no").classList.remove("active"); });
-  $("review-button").addEventListener("click", () => { try { const d = buildPayload(); validate(d); renderReview(d); hide("survey-form"); show("review-section"); } catch (e) { showError(e.message); } });
-  $("back-button").addEventListener("click", () => { hide("review-section"); show("survey-form"); });
-  $("submit-button").addEventListener("click", async () => { try { const d = buildPayload(); validate(d); await submit(d); hide("review-section"); show("complete-section"); } catch (e) { showError(e.message); } });
+function renderReview(payload){$("review-content").innerHTML=payload.responses.map(r=>`<div class="subsection"><strong>${r.Year}年度</strong><div>Participants最終: ${fmt(r.Participants_final)}</div><div>SCA: ${r.sca_occurred?"発生あり":"発生なし"}</div></div>`).join("");}
+async function submit(payload){const r=await fetch(APPS_SCRIPT_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||!d.ok) throw new Error(d.error||"送信失敗");}
+
+function setupEvents(){
+  $("review-button").addEventListener("click",()=>{try{const p=buildPayload();renderReview(p);hide("survey-form");show("review-section");}catch(e){showError(e.message);}});
+  $("back-button").addEventListener("click",()=>{hide("review-section");show("survey-form");});
+  $("submit-button").addEventListener("click",async()=>{try{const p=buildPayload();await submit(p);hide("review-section");show("complete-section");}catch(e){showError(e.message);}});
 }
 
-async function init() {
-  parseQuery();
-  if (!state.surveyId || !state.token) {
-    showError("案内文書に記載された専用URLからアクセスしてください");
-    return;
-  }
-  show("loading");
-  try {
-    hideError();
-    state.raceData = await fetchRaceData();
-    renderRaceSummary(state.raceData);
-    show("survey-form");
-  } catch (e) {
-    showError(e.message);
-  } finally {
-    hide("loading");
-  }
-}
-
-setupEvents();
-init();
+async function init(){parseQuery();if(!state.raceId||!state.token) return showError("案内文書に記載された専用URLからアクセスしてください");show("loading");try{state.races=await fetchRaceRows();renderCards();show("survey-form");}catch(e){showError(e.message);}finally{hide("loading");}}
+setupEvents();init();
