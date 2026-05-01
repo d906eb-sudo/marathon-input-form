@@ -6,12 +6,19 @@ const err=(m)=>{$('app-error').textContent=m;show('app-error');};
 
 function parseQuery(){const p=new URLSearchParams(location.search);state.raceId=p.get('race_id');state.token=p.get('token');}
 async function fetchRows(){const u=new URL(APPS_SCRIPT_URL);u.searchParams.set('race_id',state.raceId);u.searchParams.set('token',state.token);const r=await fetch(u);const d=await r.json();if(!r.ok||!d.ok) throw new Error('専用URLが無効です。案内文書をご確認ください');return d.races;}
+function isHeld(v){ return ['開催','実施','1','yes','true'].includes(String(v||'').toLowerCase()) || String(v||'').includes('開催'); }
 
 function renderRaceTable(){
   $('race-tbody').innerHTML = state.races.map((r,i)=>`
-    <tr>
-      <td>${fmt(r.Year)}年<div class="meta hidden">${fmt(r.survey_id)}</div></td><td>${fmt(r.Held)}</td><td>${fmt(r.Participants_existing)}</td><td>${fmt(r.Finishers_existing)}</td><td>${fmt(r.Men_percent_existing)}</td><td>${fmt(r.Men50_percent_existing)}</td><td>${fmt(r.Men60_percent_existing)}</td>
-      <td><button type="button" class="btn btn-secondary" id="edit-btn-${i}">修正</button><div id="edit-${i}" class="detail hidden"><label>参加者数（最終）</label><input id="p-${i}" type="number" min="0" value="${fmt(r.Participants_existing)}"><label>完走者数（最終）</label><input id="f-${i}" type="number" min="0" value="${fmt(r.Finishers_existing)}"><label>男性割合（%）（最終）</label><input id="m-${i}" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men_percent_existing)}"><label>50歳超男性割合（%）（最終）</label><input id="m50-${i}" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men50_percent_existing)}"><label>60歳超男性割合（%）（最終）</label><input id="m60-${i}" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men60_percent_existing)}"><label>回答者メモ</label><textarea id="note-edit-${i}" rows="2"></textarea></div></td>
+    <tr class="${isHeld(r.Held)?'held-row':''}">
+      <td>${fmt(r.Year)}年<div class="meta hidden">${fmt(r.survey_id)}</div></td>
+      <td>${fmt(r.Held)}</td>
+      <td><div class="cell-edit"><span id="pv-${i}">${fmt(r.Participants_existing)}</span><input id="p-${i}" class="hidden" type="number" min="0" value="${fmt(r.Participants_existing)}"><button type="button" class="btn btn-secondary cell-btn" id="ep-${i}">修正</button></div></td>
+      <td><div class="cell-edit"><span id="fv-${i}">${fmt(r.Finishers_existing)}</span><input id="f-${i}" class="hidden" type="number" min="0" value="${fmt(r.Finishers_existing)}"><button type="button" class="btn btn-secondary cell-btn" id="ef-${i}">修正</button></div></td>
+      <td><div class="cell-edit"><span id="mv-${i}">${fmt(r.Men_percent_existing)}</span><input id="m-${i}" class="hidden" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men_percent_existing)}"><button type="button" class="btn btn-secondary cell-btn" id="em-${i}">修正</button></div></td>
+      <td><div class="cell-edit"><span id="m50v-${i}">${fmt(r.Men50_percent_existing)}</span><input id="m50-${i}" class="hidden" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men50_percent_existing)}"><button type="button" class="btn btn-secondary cell-btn" id="em50-${i}">修正</button></div></td>
+      <td><div class="cell-edit"><span id="m60v-${i}">${fmt(r.Men60_percent_existing)}</span><input id="m60-${i}" class="hidden" type="number" min="0" max="100" step="0.1" value="${fmt(r.Men60_percent_existing)}"><button type="button" class="btn btn-secondary cell-btn" id="em60-${i}">修正</button></div></td>
+      <td><textarea id="note-edit-${i}" rows="2" placeholder="任意"></textarea></td>
     </tr>`).join('');
 }
 
@@ -20,17 +27,32 @@ function renderScaTable(){
     <tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary active" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-secondary" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="false"></td><td>有無のみ回答（詳細は後日個別確認）</td></tr>`).join('');
 }
 
-function bindRows(){state.races.forEach((_,i)=>{ $('edit-btn-'+i).addEventListener('click',()=> $('edit-'+i).classList.toggle('hidden')); $('sca-no-'+i).addEventListener('click',()=>{$('sca-'+i).value='false';$('sca-no-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');}); $('sca-yes-'+i).addEventListener('click',()=>{$('sca-'+i).value='true';$('sca-yes-'+i).classList.add('active');$('sca-no-'+i).classList.remove('active');}); });}
+function toggleCell(inputId, spanId, btnId){
+  const inp=$(inputId), sp=$(spanId), b=$(btnId);
+  const editing=!inp.classList.contains('hidden');
+  if(editing){ sp.textContent=fmt(inp.value); inp.classList.add('hidden'); sp.classList.remove('hidden'); b.textContent='修正'; }
+  else { inp.classList.remove('hidden'); sp.classList.add('hidden'); b.textContent='確定'; inp.focus(); }
+}
+
+function bindRows(){
+  state.races.forEach((_,i)=>{
+    [['p','pv','ep'],['f','fv','ef'],['m','mv','em'],['m50','m50v','em50'],['m60','m60v','em60']].forEach(([a,b,c])=>{
+      $(c+'-'+i).addEventListener('click',()=>toggleCell(a+'-'+i,b+'-'+i,c+'-'+i));
+    });
+    $('sca-no-'+i).addEventListener('click',()=>{$('sca-'+i).value='false';$('sca-no-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');});
+    $('sca-yes-'+i).addEventListener('click',()=>{$('sca-'+i).value='true';$('sca-yes-'+i).classList.add('active');$('sca-no-'+i).classList.remove('active');});
+  });
+}
 
 function buildPayload(){
-  const responses=state.races.map((r,i)=>{const edited=!$('edit-'+i).classList.contains('hidden'), sca=$('sca-'+i).value==='true';
-    const o={survey_id:r.survey_id,Year:r.Year,Race_ID:r.Race_ID,Race_Name:r.Race_Name,Held:r.Held,confirmed_existing_data:!edited,
-      Participants_existing:r.Participants_existing,Participants_final:edited?$('p-'+i).value:r.Participants_existing,
-      Finishers_existing:r.Finishers_existing,Finishers_final:edited?$('f-'+i).value:r.Finishers_existing,
-      Men_percent_existing:r.Men_percent_existing,Men_percent_final:edited?$('m-'+i).value:r.Men_percent_existing,
-      Men50_percent_existing:r.Men50_percent_existing,Men50_percent_final:edited?$('m50-'+i).value:r.Men50_percent_existing,
-      Men60_percent_existing:r.Men60_percent_existing,Men60_percent_final:edited?$('m60-'+i).value:r.Men60_percent_existing,
-      respondent_notes: edited?$('note-edit-'+i).value:'', sca_occurred:sca,sca_count:'',aed_used:'',rosc:'',death:'',sca_notes:''};
+  const responses=state.races.map((r,i)=>{const sca=$('sca-'+i).value==='true';
+    const o={survey_id:r.survey_id,Year:r.Year,Race_ID:r.Race_ID,Race_Name:r.Race_Name,Held:r.Held,confirmed_existing_data: ($('p-'+i).value===String(r.Participants_existing) && $('f-'+i).value===String(r.Finishers_existing) && $('m-'+i).value===String(r.Men_percent_existing) && $('m50-'+i).value===String(r.Men50_percent_existing) && $('m60-'+i).value===String(r.Men60_percent_existing)),
+      Participants_existing:r.Participants_existing,Participants_final:$('p-'+i).value||r.Participants_existing,
+      Finishers_existing:r.Finishers_existing,Finishers_final:$('f-'+i).value||r.Finishers_existing,
+      Men_percent_existing:r.Men_percent_existing,Men_percent_final:$('m-'+i).value||r.Men_percent_existing,
+      Men50_percent_existing:r.Men50_percent_existing,Men50_percent_final:$('m50-'+i).value||r.Men50_percent_existing,
+      Men60_percent_existing:r.Men60_percent_existing,Men60_percent_final:$('m60-'+i).value||r.Men60_percent_existing,
+      respondent_notes:$('note-edit-'+i).value, sca_occurred:sca,sca_count:'',aed_used:'',rosc:'',death:'',sca_notes:''};
     return o;});
   return {race_id:state.raceId,token:state.token,responses};
 }
