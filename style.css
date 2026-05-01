@@ -10,4 +10,3 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 @media(max-width:767px){th,td{font-size:13px;padding:6px}.button-row{flex-direction:column}}
 
 .notice{border:1px solid var(--border);background:#fbfcfe;border-radius:8px;padding:10px;margin:8px 0}.notice ul{margin:6px 0 0 18px;padding:0}.notice li{margin:6px 0;line-height:1.5}
-
