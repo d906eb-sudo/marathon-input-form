@@ -17,10 +17,10 @@ function renderRaceTable(){
 
 function renderScaTable(){
   $('sca-tbody').innerHTML = state.races.map((r,i)=>`
-    <tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary active" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-secondary" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="false"></td><td><div id="sca-detail-${i}" class="detail hidden"><label>件数*</label><input id="scac-${i}" type="number" min="1"><label>AED使用</label><select id="aed-${i}"><option value="">選択してください</option><option>あり</option><option>なし</option><option>不明</option></select><label>ROSC</label><select id="rosc-${i}"><option value="">選択してください</option><option>あり</option><option>なし</option><option>不明</option></select><label>死亡有無</label><select id="death-${i}"><option value="">選択してください</option><option>あり</option><option>なし</option><option>不明</option></select><label>備考</label><textarea id="scan-${i}" rows="2"></textarea><label>回答者メモ</label><textarea id="note-sca-${i}" rows="2"></textarea></div></td></tr>`).join('');
+    <tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary active" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-secondary" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="false"></td><td>有無のみ回答（詳細は後日個別確認）</td></tr>`).join('');
 }
 
-function bindRows(){state.races.forEach((_,i)=>{ $('edit-btn-'+i).addEventListener('click',()=> $('edit-'+i).classList.toggle('hidden')); $('sca-no-'+i).addEventListener('click',()=>{$('sca-'+i).value='false';hide('sca-detail-'+i);$('sca-no-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');}); $('sca-yes-'+i).addEventListener('click',()=>{$('sca-'+i).value='true';show('sca-detail-'+i);$('sca-yes-'+i).classList.add('active');$('sca-no-'+i).classList.remove('active');}); });}
+function bindRows(){state.races.forEach((_,i)=>{ $('edit-btn-'+i).addEventListener('click',()=> $('edit-'+i).classList.toggle('hidden')); $('sca-no-'+i).addEventListener('click',()=>{$('sca-'+i).value='false';$('sca-no-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');}); $('sca-yes-'+i).addEventListener('click',()=>{$('sca-'+i).value='true';$('sca-yes-'+i).classList.add('active');$('sca-no-'+i).classList.remove('active');}); });}
 
 function buildPayload(){
   const responses=state.races.map((r,i)=>{const edited=!$('edit-'+i).classList.contains('hidden'), sca=$('sca-'+i).value==='true';
@@ -30,8 +30,8 @@ function buildPayload(){
       Men_percent_existing:r.Men_percent_existing,Men_percent_final:edited?$('m-'+i).value:r.Men_percent_existing,
       Men50_percent_existing:r.Men50_percent_existing,Men50_percent_final:edited?$('m50-'+i).value:r.Men50_percent_existing,
       Men60_percent_existing:r.Men60_percent_existing,Men60_percent_final:edited?$('m60-'+i).value:r.Men60_percent_existing,
-      respondent_notes: edited?$('note-edit-'+i).value:($('note-sca-'+i)?.value||''), sca_occurred:sca,sca_count:$('scac-'+i)?.value||'',aed_used:$('aed-'+i)?.value||'',rosc:$('rosc-'+i)?.value||'',death:$('death-'+i)?.value||'',sca_notes:$('scan-'+i)?.value||''};
-    if(sca && (!o.sca_count || Number(o.sca_count)<1)) throw new Error(`${r.Year}年: 心停止事例ありの場合は件数必須です。`); return o;});
+      respondent_notes: edited?$('note-edit-'+i).value:'', sca_occurred:sca,sca_count:'',aed_used:'',rosc:'',death:'',sca_notes:''};
+    return o;});
   return {race_id:state.raceId,token:state.token,responses};
 }
 
