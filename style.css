@@ -14,3 +14,6 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 .cell-edit{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}.cell-btn{padding:5px 8px;font-size:12px;white-space:nowrap}
 
 .held-row td{background:#fff3b0 !important;font-weight:700 !important}
+
+
+.existing-val{color:#c62828;font-weight:700}
