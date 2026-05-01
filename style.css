@@ -12,3 +12,5 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 .notice{border:1px solid var(--border);background:#fbfcfe;border-radius:8px;padding:10px;margin:8px 0}.notice ul{margin:6px 0 0 18px;padding:0}.notice li{margin:6px 0;line-height:1.5}
 
 .cell-edit{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}.cell-btn{padding:5px 8px;font-size:12px;white-space:nowrap}
+
+.held-row td{background:#fff3b0 !important;font-weight:700 !important}
