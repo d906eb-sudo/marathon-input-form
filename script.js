@@ -23,7 +23,7 @@ function renderRaceTable(){
     </tr>`).join('');
 }
 
-function prefillSCA(v){ const t=String(v??'').trim(); if(t==='1') return 'true'; if(t==='0') return 'false'; if(t==='不明') return 'unknown'; return 'unknown'; }
+function prefillSCA(v){ const raw=String(v??'').trim(); const t=raw.toLowerCase(); if(['1','1.0','true','あり','有','yes','y'].includes(t)) return 'true'; if(['0','0.0','false','なし','無','no','n'].includes(t)) return 'false'; if(['不明','unknown','na','n/a',''].includes(raw)) return 'unknown'; return 'unknown'; }
 
 function renderScaTable(){
   $('sca-tbody').innerHTML = state.races.map((r,i)=>{
