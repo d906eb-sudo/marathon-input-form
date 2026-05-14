@@ -17,3 +17,6 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 
 
 .existing-val{color:#c62828 !important;font-weight:700 !important}
+
+.btn-danger{background:#c62828;color:#fff}.btn-danger.active{background:#b71c1c;color:#fff}
+.case-box{border:1px solid var(--border);padding:8px;border-radius:8px;margin:8px 0;background:#fff}
