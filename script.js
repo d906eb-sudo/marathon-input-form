@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxL3W0eEQoazTDodbzALXC2HHJcz9r3u-MoANP-acsjTE1Cm5H3qvpr6kCiUxNv4KB6OQ/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlRHVThMucXNv8aKe0rUztDhcZXQ-34-FLdmDzw8cgEuI0qLWJitqRmu_V7x2ljr6whw/exec";
 const state = { raceId: null, token: null, races: [] };
 const $ = (id) => document.getElementById(id), show=(id)=>$(id).classList.remove('hidden'), hide=(id)=>$(id).classList.add('hidden');
 const fmt=(v)=> (v===undefined||v===null||v==="")?"未入力":String(v);
@@ -24,10 +24,13 @@ function renderRaceTable(){
 }
 
 function prefillSCA(v){ const raw=String(v??'').trim(); const t=raw.toLowerCase(); if(['1','1.0','true','あり','有','yes','y'].includes(t)) return 'true'; if(['0','0.0','false','なし','無','no','n'].includes(t)) return 'false'; if(['不明','unknown','na','n/a',''].includes(raw)) return 'unknown'; return 'unknown'; }
+function getPrefillValue(r){
+  return r.sca_occurred_prefill ?? r.sca_prefill ?? r.SCA_prefill ?? r.sca_occurred ?? '';
+}
 
 function renderScaTable(){
   $('sca-tbody').innerHTML = state.races.map((r,i)=>{
-    const pref = prefillSCA(r.sca_occurred_prefill);
+    const pref = prefillSCA(getPrefillValue(r));
     const noActive = pref !== 'true' ? 'active' : '';
     const yesActive = pref === 'true' ? 'active' : '';
     const val = pref === 'true' ? 'true' : 'false';
