@@ -7,7 +7,7 @@ function existingClass(v){ const t=String(v??'').trim(); return t && t!=='未入
 
 function parseQuery(){const p=new URLSearchParams(location.search);state.raceId=p.get('race_id');state.token=p.get('token');}
 async function fetchRows(){const u=new URL(APPS_SCRIPT_URL);u.searchParams.set('race_id',state.raceId);u.searchParams.set('token',state.token);const r=await fetch(u);const d=await r.json();if(!r.ok||!d.ok) throw new Error('専用URLが無効です。案内文書をご確認ください');return d.races;}
-function isHeld(v){ const t=String(v||'').trim().toLowerCase(); return ['開催','実施','1','yes','true'].includes(t); }
+function isHeld(v){ const t=String(v||'').replace(/\s+/g,'').toLowerCase(); if(!t || t.includes('非') || t.includes('対象外')) return false; return /^(開催|実施|1|yes|true)$/i.test(t); }
 
 function renderRaceTable(){
   $('race-tbody').innerHTML = state.races.map((r,i)=>`
@@ -23,9 +23,17 @@ function renderRaceTable(){
     </tr>`).join('');
 }
 
+function prefillSCA(v){ const t=String(v??'').trim(); if(t==='1') return 'true'; if(t==='0') return 'false'; if(t==='不明') return 'unknown'; return 'unknown'; }
+
 function renderScaTable(){
-  $('sca-tbody').innerHTML = state.races.map((r,i)=>`
-    <tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary active" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-secondary" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="false"></td><td>有無のみ回答（詳細は後日個別確認）</td></tr>`).join('');
+  $('sca-tbody').innerHTML = state.races.map((r,i)=>{
+    const pref = prefillSCA(r.sca_occurred_prefill);
+    const noActive = pref !== 'true' ? 'active' : '';
+    const yesActive = pref === 'true' ? 'active' : '';
+    const note = pref === 'unknown' ? '（不明）' : ''; 
+    const val = pref === 'true' ? 'true' : 'false';
+    return `<tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary ${noActive}" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-secondary ${yesActive}" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="${val}"><div class="meta">事前設定: ${pref==='true'?'あり':(pref==='false'?'なし':'不明')}</div></td><td>有無のみ回答${note}</td></tr>`;
+  }).join('');
 }
 
 function toggleCell(inputId, spanId, btnId){
