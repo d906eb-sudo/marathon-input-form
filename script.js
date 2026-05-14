@@ -31,7 +31,7 @@ function renderScaTable(){
     const noActive = pref !== 'true' ? 'active' : '';
     const yesActive = pref === 'true' ? 'active' : '';
     const val = pref === 'true' ? 'true' : 'false';
-    return `<tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary ${noActive}" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-danger ${yesActive}" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="${val}"></td><td><div id="sca-detail-${i}" class="detail ${pref==='true'?'':'hidden'}"><div id="cases-${i}"></div><button type="button" class="btn btn-secondary cell-btn" id="add-case-${i}">症例を追加</button></div></td></tr>`;
+    return `<tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary ${noActive}" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-secondary yes-btn ${yesActive}" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="${val}"></td><td><div id="sca-detail-${i}" class="detail ${pref==='true'?'':'hidden'}"><div id="cases-${i}"></div><button type="button" class="btn btn-secondary cell-btn" id="add-case-${i}">症例を追加</button></div></td></tr>`;
   }).join('');
 }
 
