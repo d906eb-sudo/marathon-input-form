@@ -16,4 +16,4 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 .held-row td{background:#fff3b0 !important;font-weight:700 !important}
 
 
-.existing-val{color:#c62828;font-weight:700}
+.existing-val{color:#c62828 !important;font-weight:700 !important}
