@@ -39,11 +39,20 @@ function doPost(e) {
   } catch (error) { return jsonOutput({ ok: false, error: 'サーバーエラー: ' + error.message }); }
 }
 
+function findHeaderIndex_(header, candidates) {
+  for (var i = 0; i < candidates.length; i++) {
+    var idx = header.indexOf(candidates[i]);
+    if (idx >= 0) return idx;
+  }
+  return -1;
+}
+
 function findRowsByRaceToken_(raceId, token) {
   const values = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_MASTER).getDataRange().getValues();
   if (values.length < 2) return [];
   const h = values[0];
-  const i = { survey_id:h.indexOf('survey_id'), token:h.indexOf('token'), Race_ID:h.indexOf('Race_ID'), Race_Name:h.indexOf('Race_Name'), Year:h.indexOf('Year'), Held:h.indexOf('Held'), Participants_existing:h.indexOf('Participants_existing'), Finishers_existing:h.indexOf('Finishers_existing'), Men_percent_existing:h.indexOf('Men_percent_existing'), Men50_percent_existing:h.indexOf('Men50_percent_existing'), Men60_percent_existing:h.indexOf('Men60_percent_existing'), sca_occurred_prefill:h.indexOf('sca_occurred_prefill') };
+  const scaPrefillIdx = findHeaderIndex_(h, ['sca_occurred_prefill','sca_prefill','SCA_prefill','sca_occurred_prefill_flag','sca_occurred_prefill_value','心停止事例有無','心停止有無']);
+  const i = { survey_id:h.indexOf('survey_id'), token:h.indexOf('token'), Race_ID:h.indexOf('Race_ID'), Race_Name:h.indexOf('Race_Name'), Year:h.indexOf('Year'), Held:h.indexOf('Held'), Participants_existing:h.indexOf('Participants_existing'), Finishers_existing:h.indexOf('Finishers_existing'), Men_percent_existing:h.indexOf('Men_percent_existing'), Men50_percent_existing:h.indexOf('Men50_percent_existing'), Men60_percent_existing:h.indexOf('Men60_percent_existing'), sca_occurred_prefill: scaPrefillIdx };
   return values.slice(1).filter((r) => String(r[i.Race_ID]).trim() === raceId && String(r[i.token]).trim() === token).map((r) => ({ survey_id:String(r[i.survey_id]||''), Race_ID:String(r[i.Race_ID]||''), Race_Name:String(r[i.Race_Name]||''), Year:String(r[i.Year]||''), Held:String(r[i.Held]||''), Participants_existing:String(r[i.Participants_existing]||''), Finishers_existing:String(r[i.Finishers_existing]||''), Men_percent_existing:String(r[i.Men_percent_existing]||''), Men50_percent_existing:String(r[i.Men50_percent_existing]||''), Men60_percent_existing:String(r[i.Men60_percent_existing]||''), sca_occurred_prefill: i.sca_occurred_prefill >= 0 ? String(r[i.sca_occurred_prefill]||'').trim() : '' }));
 }
 function jsonOutput(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
