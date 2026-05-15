@@ -23,7 +23,7 @@ function renderRaceTable(){
     </tr>`).join('');
 }
 
-function prefillSCA(v){ const raw=String(v??'').trim(); const t=raw.toLowerCase(); if(['1','1.0','true','あり','有','yes','y'].includes(t)) return 'true'; if(['0','0.0','false','なし','無','no','n'].includes(t)) return 'false'; if(['不明','unknown','na','n/a',''].includes(raw)) return 'unknown'; return 'unknown'; }
+function prefillSCA(v){ const raw=String(v??'').replace(/\s+/g,'').trim(); const t=raw.toLowerCase(); if(['1','1.0','true','あり','有','yes','y'].includes(t)) return 'true'; if(['0','0.0','false','なし','無','no','n'].includes(t)) return 'false'; if(['2','不明','unknown','na','n/a',''].includes(raw)) return 'unknown'; return 'unknown'; }
 function getPrefillValue(r){
   return r.sca_occurred_prefill ?? r.sca_prefill ?? r.SCA_prefill ?? r.sca_occurred ?? '';
 }
@@ -32,12 +32,11 @@ function prefillLabel(v){ const p = prefillSCA(v); return p==='true' ? '発生�
 
 function renderScaTable(){
   $('sca-tbody').innerHTML = state.races.map((r,i)=>{
-    const pref = prefillSCA(getPrefillValue(r));
-    const noActive = pref === 'false' ? 'active' : '';
-    const yesActive = pref === 'true' ? 'active' : '';
-    const unkActive = pref === 'unknown' ? 'active' : '';
-    const val = pref === 'true' ? 'true' : (pref === 'false' ? 'false' : 'unknown');
-    return `<tr><td>${fmt(r.Year)}年</td><td><span class="prefill-badge">${prefillLabel(getPrefillValue(r))}</span></td><td><div class="seg"><button type="button" class="btn btn-secondary ${yesActive}" id="sca-yes-${i}">あり</button><button type="button" class="btn btn-secondary ${noActive}" id="sca-no-${i}">なし</button><button type="button" class="btn btn-secondary ${unkActive}" id="sca-unknown-${i}">不明</button></div><input type="hidden" id="sca-${i}" value="${val}"></td></tr>`;
+    const prefRaw = getPrefillValue(r);
+    const pref = prefillSCA(prefRaw);
+    const label = pref==='true' ? '発生あり' : (pref==='false' ? '発生なし' : '未報告');
+    const selectVal = '2';
+    return `<tr><td>${fmt(r.Year)}年</td><td><span class="prefill-badge">${label}</span><div class="meta">prefill=${fmt(prefRaw)}</div></td><td><select id="sca-select-${i}"><option value="2" ${selectVal==='2'?'selected':''}>修正なし</option><option value="true">あり</option><option value="false">なし</option><option value="unknown">不明</option></select></td></tr>`;
   }).join('');
 }
 
@@ -53,14 +52,12 @@ function bindRows(){
     [['p','pv','ep'],['f','fv','ef'],['m','mv','em'],['m50','m50v','em50'],['m60','m60v','em60']].forEach(([a,b,c])=>{
       $(c+'-'+i).addEventListener('click',()=>toggleCell(a+'-'+i,b+'-'+i,c+'-'+i));
     });
-    $('sca-no-'+i).addEventListener('click',()=>{$('sca-'+i).value='false';$('sca-no-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');$('sca-unknown-'+i).classList.remove('active');});
-    $('sca-yes-'+i).addEventListener('click',()=>{$('sca-'+i).value='true';$('sca-yes-'+i).classList.add('active');$('sca-no-'+i).classList.remove('active');$('sca-unknown-'+i).classList.remove('active');});
-    $('sca-unknown-'+i).addEventListener('click',()=>{$('sca-'+i).value='unknown';$('sca-unknown-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');$('sca-no-'+i).classList.remove('active');});
+
   });
 }
 
 function buildPayload(){
-  const responses=state.races.map((r,i)=>{const scaVal=$('sca-'+i).value; const sca=(scaVal==='true');
+  const responses=state.races.map((r,i)=>{const sel=$('sca-select-'+i).value; const basePref=prefillSCA(getPrefillValue(r)); const scaVal = sel==='2' ? basePref : sel; const sca=(scaVal==='true');
     const o={survey_id:r.survey_id,Year:r.Year,Race_ID:r.Race_ID,Race_Name:r.Race_Name,Held:r.Held,confirmed_existing_data: ($('p-'+i).value===String(r.Participants_existing) && $('f-'+i).value===String(r.Finishers_existing) && $('m-'+i).value===String(r.Men_percent_existing) && $('m50-'+i).value===String(r.Men50_percent_existing) && $('m60-'+i).value===String(r.Men60_percent_existing)),
       Participants_existing:r.Participants_existing,Participants_final:$('p-'+i).value||r.Participants_existing,
       Finishers_existing:r.Finishers_existing,Finishers_final:$('f-'+i).value||r.Finishers_existing,
