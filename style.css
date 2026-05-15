@@ -24,3 +24,7 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 
 .prefill-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2f6;font-weight:700;font-size:13px}
 .seg .btn{min-width:60px}
+
+.badge-red{background:#f9d7d9;color:#8b1d22}
+.badge-blue{background:#d8e9ff;color:#134a9e}
+.badge-green{background:#dff3df;color:#1f6f2e}
