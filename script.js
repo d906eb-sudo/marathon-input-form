@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHc_boX7tPeBXCOglyP4ayQjxAk7yQevlu4Qs7AzTfnjjgI20uWxoa7JKWZHrQxvI2cQ/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoYIi--UseNsLM0TkSOm50EBq25RpXVTEWFEL2dvorz7LLCJYPmrsOlgMvj3ykyZXqsw/exec";
 const state = { raceId: null, token: null, races: [] };
 const $ = (id) => document.getElementById(id), show=(id)=>$(id).classList.remove('hidden'), hide=(id)=>$(id).classList.add('hidden');
 const fmt=(v)=> (v===undefined||v===null||v==="")?"未入力":String(v);
@@ -25,7 +25,7 @@ function renderRaceTable(){
 
 function prefillSCA(v){ const raw=String(v??'').replace(/\s+/g,'').trim(); const t=raw.toLowerCase(); if(['1','1.0','true','あり','有','yes','y','１','発生あり'].includes(t)) return 'true'; if(['0','0.0','false','なし','無','no','n','０','発生なし'].includes(t)) return 'false'; if(['2','不明','unknown','na','n/a',''].includes(t)) return 'unknown'; return 'unknown'; }
 function getPrefillValue(r){
-  return r.sca_occurred_prefill ?? r.sca_prefill ?? r.SCA_prefill ?? r.sca_occurred ?? '';
+  return r.sca_prefill_norm ?? r.sca_occurred_prefill ?? r.sca_prefill ?? r.SCA_prefill ?? r.sca_occurred ?? '';
 }
 
 function prefillLabel(v){ const p = prefillSCA(v); return p==='true' ? '発生あり' : (p==='false' ? '発生なし' : '未報告'); }
