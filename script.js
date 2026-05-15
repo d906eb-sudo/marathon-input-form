@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlRHVThMucXNv8aKe0rUztDhcZXQ-34-FLdmDzw8cgEuI0qLWJitqRmu_V7x2ljr6whw/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHc_boX7tPeBXCOglyP4ayQjxAk7yQevlu4Qs7AzTfnjjgI20uWxoa7JKWZHrQxvI2cQ/exec";
 const state = { raceId: null, token: null, races: [] };
 const $ = (id) => document.getElementById(id), show=(id)=>$(id).classList.remove('hidden'), hide=(id)=>$(id).classList.add('hidden');
 const fmt=(v)=> (v===undefined||v===null||v==="")?"未入力":String(v);
@@ -36,7 +36,7 @@ function renderScaTable(){
     const pref = prefillSCA(prefRaw);
     const label = pref==='true' ? '発生あり' : (pref==='false' ? '発生なし' : '未報告');
     const selectVal = '2';
-    return `<tr><td>${fmt(r.Year)}年</td><td><span class="prefill-badge">${label}</span><div class="meta">prefill=${fmt(prefRaw)}</div></td><td><select id="sca-select-${i}"><option value="2" ${selectVal==='2'?'selected':''}>修正なし</option><option value="true">あり</option><option value="false">なし</option><option value="unknown">不明</option></select></td></tr>`;
+    return `<tr><td>${fmt(r.Year)}年</td><td><span class="prefill-badge">${label}</span><div class="meta">prefill=${fmt(prefRaw)} / source=${fmt(r.prefill_source||'none')}</div></td><td><select id="sca-select-${i}"><option value="2" ${selectVal==='2'?'selected':''}>修正なし</option><option value="true">あり</option><option value="false">なし</option><option value="unknown">不明</option></select></td></tr>`;
   }).join('');
 }
 
