@@ -86,4 +86,11 @@ function findRowsByRaceToken_(raceId, token) {
     return { survey_id:sid, Race_ID:String(r[i.Race_ID]||''), Race_Name:String(r[i.Race_Name]||''), Year:String(r[i.Year]||''), Held:String(r[i.Held]||''), Participants_existing:String(r[i.Participants_existing]||''), Finishers_existing:String(r[i.Finishers_existing]||''), Men_percent_existing:String(r[i.Men_percent_existing]||''), Men50_percent_existing:String(r[i.Men50_percent_existing]||''), Men60_percent_existing:String(r[i.Men60_percent_existing]||''), sca_occurred_prefill: pref, prefill_source: fromMaster ? 'race_master' : (pref ? 'sca_response' : 'none') };
   });
 }
+function normalizeScaPrefill_(v) {
+  var raw = String(v || '').replace(/\s+/g, '').toLowerCase();
+  if (['1','1.0','true','あり','有','yes','y','１','発生あり'].indexOf(raw) >= 0) return '1';
+  if (['0','0.0','false','なし','無','no','n','０','発生なし'].indexOf(raw) >= 0) return '0';
+  return '2';
+}
+
 function jsonOutput(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
