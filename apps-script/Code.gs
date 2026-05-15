@@ -46,9 +46,10 @@ function latestScaBySurvey_() {
   const values = sheet.getDataRange().getValues();
   if (values.length < 2) return {};
   const h = values[0];
-  const iSurvey = h.indexOf('survey_id');
-  const iSca = h.indexOf('sca_occurred');
-  const iTime = h.indexOf('timestamp');
+  const iSurvey = findHeaderIndex_(h, ['survey_id','Survey_ID','surveyId']);
+  const iSca = findHeaderIndex_(h, ['sca_occurred','scaOccurred','SCA_occurred','心停止事例','心停止有無']);
+  const iTime = findHeaderIndex_(h, ['timestamp','Timestamp','created_at','作成日時']);
+  if (iSurvey < 0 || iSca < 0) return {};
   const map = {};
   values.slice(1).forEach((r) => {
     const sid = String(r[iSurvey] || '').trim();
@@ -80,8 +81,9 @@ function findRowsByRaceToken_(raceId, token) {
   return values.slice(1).filter((r) => String(r[i.Race_ID]).trim() === raceId && String(r[i.token]).trim() === token).map((r) => {
     const sid = String(r[i.survey_id] || '').trim();
     const rawPref = i.sca_occurred_prefill >= 0 ? String(r[i.sca_occurred_prefill]||'').trim() : '';
-    const pref = rawPref === '' ? (latestScaMap[sid] || '') : rawPref;
-    return { survey_id:sid, Race_ID:String(r[i.Race_ID]||''), Race_Name:String(r[i.Race_Name]||''), Year:String(r[i.Year]||''), Held:String(r[i.Held]||''), Participants_existing:String(r[i.Participants_existing]||''), Finishers_existing:String(r[i.Finishers_existing]||''), Men_percent_existing:String(r[i.Men_percent_existing]||''), Men50_percent_existing:String(r[i.Men50_percent_existing]||''), Men60_percent_existing:String(r[i.Men60_percent_existing]||''), sca_occurred_prefill: pref };
+    const fromMaster = rawPref !== '';
+    const pref = fromMaster ? rawPref : (latestScaMap[sid] || '');
+    return { survey_id:sid, Race_ID:String(r[i.Race_ID]||''), Race_Name:String(r[i.Race_Name]||''), Year:String(r[i.Year]||''), Held:String(r[i.Held]||''), Participants_existing:String(r[i.Participants_existing]||''), Finishers_existing:String(r[i.Finishers_existing]||''), Men_percent_existing:String(r[i.Men_percent_existing]||''), Men50_percent_existing:String(r[i.Men50_percent_existing]||''), Men60_percent_existing:String(r[i.Men60_percent_existing]||''), sca_occurred_prefill: pref, prefill_source: fromMaster ? 'race_master' : (pref ? 'sca_response' : 'none') };
   });
 }
 function jsonOutput(obj) { return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON); }
