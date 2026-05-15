@@ -28,32 +28,17 @@ function getPrefillValue(r){
   return r.sca_occurred_prefill ?? r.sca_prefill ?? r.SCA_prefill ?? r.sca_occurred ?? '';
 }
 
+function prefillLabel(v){ const p = prefillSCA(v); return p==='true' ? '発生あり' : (p==='false' ? '発生なし' : '未報告'); }
+
 function renderScaTable(){
   $('sca-tbody').innerHTML = state.races.map((r,i)=>{
     const pref = prefillSCA(getPrefillValue(r));
-    const noActive = pref !== 'true' ? 'active' : '';
+    const noActive = pref === 'false' ? 'active' : '';
     const yesActive = pref === 'true' ? 'active' : '';
-    const val = pref === 'true' ? 'true' : 'false';
-    return `<tr><td>${fmt(r.Year)}年</td><td><div class="seg"><button type="button" class="btn btn-secondary ${noActive}" id="sca-no-${i}">心停止事例なし</button><button type="button" class="btn btn-secondary yes-btn ${yesActive}" id="sca-yes-${i}">心停止事例あり</button></div><input type="hidden" id="sca-${i}" value="${val}"></td><td><div id="sca-detail-${i}" class="detail ${pref==='true'?'':'hidden'}"><div id="cases-${i}"></div><button type="button" class="btn btn-secondary cell-btn" id="add-case-${i}">症例を追加</button></div></td></tr>`;
+    const unkActive = pref === 'unknown' ? 'active' : '';
+    const val = pref === 'true' ? 'true' : (pref === 'false' ? 'false' : 'unknown');
+    return `<tr><td>${fmt(r.Year)}年</td><td><span class="prefill-badge">${prefillLabel(getPrefillValue(r))}</span></td><td><div class="seg"><button type="button" class="btn btn-secondary ${yesActive}" id="sca-yes-${i}">あり</button><button type="button" class="btn btn-secondary ${noActive}" id="sca-no-${i}">なし</button><button type="button" class="btn btn-secondary ${unkActive}" id="sca-unknown-${i}">不明</button></div><input type="hidden" id="sca-${i}" value="${val}"></td></tr>`;
   }).join('');
-}
-
-function createCaseForm(i, idx){
-  return `<div class="case-box" data-case-index="${idx}">
-    <label>①年齢</label><input id="age-${i}-${idx}" type="number" min="0" />
-    <label>②性別</label><select id="sex-${i}-${idx}"><option value="">選択</option><option>男性</option><option>女性</option><option>その他</option><option>不明</option></select>
-    <label>③発生場所（km）</label><input id="loc-${i}-${idx}" type="number" min="0" step="0.1" />
-    <label>④発生時間（スタートからの時間、分）</label><input id="time-${i}-${idx}" type="number" min="0" />
-    <label>⑤発生から胸骨圧迫開始までの時間（分）</label><input id="cpr-${i}-${idx}" type="number" min="0" />
-    <label>⑥AEDの有無</label><select id="aed-${i}-${idx}"><option value="">選択</option><option>あり</option><option>なし</option><option>不明</option></select>
-    <label>⑦転帰</label><select id="outcome-${i}-${idx}"><option value="">選択</option><option>コース上で蘇生</option><option>病院搬送中に蘇生</option><option>病院で蘇生</option><option>病院で死亡</option></select>
-  </div>`;
-}
-
-function appendCase(i){
-  const box = $('cases-'+i);
-  const idx = box.children.length;
-  box.insertAdjacentHTML('beforeend', createCaseForm(i, idx));
 }
 
 function toggleCell(inputId, spanId, btnId){
@@ -68,22 +53,21 @@ function bindRows(){
     [['p','pv','ep'],['f','fv','ef'],['m','mv','em'],['m50','m50v','em50'],['m60','m60v','em60']].forEach(([a,b,c])=>{
       $(c+'-'+i).addEventListener('click',()=>toggleCell(a+'-'+i,b+'-'+i,c+'-'+i));
     });
-    $('sca-no-'+i).addEventListener('click',()=>{$('sca-'+i).value='false';$('sca-no-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');hide('sca-detail-'+i);});
-    $('sca-yes-'+i).addEventListener('click',()=>{$('sca-'+i).value='true';$('sca-yes-'+i).classList.add('active');$('sca-no-'+i).classList.remove('active');show('sca-detail-'+i); if($('cases-'+i).children.length===0) appendCase(i);});
-    $('add-case-'+i).addEventListener('click',()=>appendCase(i));
-    if($('sca-'+i).value==='true' && $('cases-'+i).children.length===0) appendCase(i);
+    $('sca-no-'+i).addEventListener('click',()=>{$('sca-'+i).value='false';$('sca-no-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');$('sca-unknown-'+i).classList.remove('active');});
+    $('sca-yes-'+i).addEventListener('click',()=>{$('sca-'+i).value='true';$('sca-yes-'+i).classList.add('active');$('sca-no-'+i).classList.remove('active');$('sca-unknown-'+i).classList.remove('active');});
+    $('sca-unknown-'+i).addEventListener('click',()=>{$('sca-'+i).value='unknown';$('sca-unknown-'+i).classList.add('active');$('sca-yes-'+i).classList.remove('active');$('sca-no-'+i).classList.remove('active');});
   });
 }
 
 function buildPayload(){
-  const responses=state.races.map((r,i)=>{const sca=$('sca-'+i).value==='true'; const cases=[]; if(sca){ const nodes=$('cases-'+i).querySelectorAll('.case-box'); nodes.forEach((_,ci)=>cases.push({age:$('age-'+i+'-'+ci)?.value||'',sex:$('sex-'+i+'-'+ci)?.value||'',location_km:$('loc-'+i+'-'+ci)?.value||'',time_from_start_min:$('time-'+i+'-'+ci)?.value||'',time_to_cpr_min:$('cpr-'+i+'-'+ci)?.value||'',aed:$('aed-'+i+'-'+ci)?.value||'',outcome:$('outcome-'+i+'-'+ci)?.value||''})); }
+  const responses=state.races.map((r,i)=>{const scaVal=$('sca-'+i).value; const sca=(scaVal==='true');
     const o={survey_id:r.survey_id,Year:r.Year,Race_ID:r.Race_ID,Race_Name:r.Race_Name,Held:r.Held,confirmed_existing_data: ($('p-'+i).value===String(r.Participants_existing) && $('f-'+i).value===String(r.Finishers_existing) && $('m-'+i).value===String(r.Men_percent_existing) && $('m50-'+i).value===String(r.Men50_percent_existing) && $('m60-'+i).value===String(r.Men60_percent_existing)),
       Participants_existing:r.Participants_existing,Participants_final:$('p-'+i).value||r.Participants_existing,
       Finishers_existing:r.Finishers_existing,Finishers_final:$('f-'+i).value||r.Finishers_existing,
       Men_percent_existing:r.Men_percent_existing,Men_percent_final:$('m-'+i).value||r.Men_percent_existing,
       Men50_percent_existing:r.Men50_percent_existing,Men50_percent_final:$('m50-'+i).value||r.Men50_percent_existing,
       Men60_percent_existing:r.Men60_percent_existing,Men60_percent_final:$('m60-'+i).value||r.Men60_percent_existing,
-      respondent_notes:$('note-edit-'+i).value, sca_occurred:sca,sca_count:sca?String(cases.length):'',aed_used:'',rosc:'',death:'',sca_notes:sca?JSON.stringify(cases):''};
+      respondent_notes:$('note-edit-'+i).value, sca_occurred:sca,sca_count:'',aed_used:'',rosc:'',death:'',sca_notes:(scaVal==='unknown'?'不明':'')};
     return o;});
   return {race_id:state.raceId,token:state.token,responses};
 }
