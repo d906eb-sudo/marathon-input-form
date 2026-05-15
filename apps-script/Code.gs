@@ -54,7 +54,7 @@ function latestScaBySurvey_() {
   values.slice(1).forEach((r) => {
     const sid = String(r[iSurvey] || '').trim();
     if (!sid) return;
-    const sca = String(r[iSca] || '').trim().toLowerCase();
+    const sca = String((r[iSca] ?? '')).trim().toLowerCase();
     const dt = new Date(r[iTime] || 0).getTime() || 0;
     if (!map[sid] || dt >= map[sid].ts) map[sid] = { ts: dt, val: (sca === 'true' || sca === '1') ? '1' : '0' };
   });
@@ -79,11 +79,11 @@ function findRowsByRaceToken_(raceId, token) {
   const latestScaMap = latestScaBySurvey_();
   const i = { survey_id:h.indexOf('survey_id'), token:h.indexOf('token'), Race_ID:h.indexOf('Race_ID'), Race_Name:h.indexOf('Race_Name'), Year:h.indexOf('Year'), Held:h.indexOf('Held'), Participants_existing:h.indexOf('Participants_existing'), Finishers_existing:h.indexOf('Finishers_existing'), Men_percent_existing:h.indexOf('Men_percent_existing'), Men50_percent_existing:h.indexOf('Men50_percent_existing'), Men60_percent_existing:h.indexOf('Men60_percent_existing'), sca_occurred_prefill: scaPrefillIdx };
   return values.slice(1).filter((r) => String(r[i.Race_ID]).trim() === raceId && String(r[i.token]).trim() === token).map((r) => {
-    const sid = String(r[i.survey_id] || '').trim();
-    const rawPref = i.sca_occurred_prefill >= 0 ? String(r[i.sca_occurred_prefill]||'').trim() : '';
+    const sid = String((r[i.survey_id] ?? '')).trim();
+    const rawPref = i.sca_occurred_prefill >= 0 ? String((r[i.sca_occurred_prefill] ?? '')).trim() : '';
     const fromMaster = rawPref !== '';
     const pref = fromMaster ? rawPref : (latestScaMap[sid] || '');
-    return { survey_id:sid, Race_ID:String(r[i.Race_ID]||''), Race_Name:String(r[i.Race_Name]||''), Year:String(r[i.Year]||''), Held:String(r[i.Held]||''), Participants_existing:String(r[i.Participants_existing]||''), Finishers_existing:String(r[i.Finishers_existing]||''), Men_percent_existing:String(r[i.Men_percent_existing]||''), Men50_percent_existing:String(r[i.Men50_percent_existing]||''), Men60_percent_existing:String(r[i.Men60_percent_existing]||''), sca_occurred_prefill: pref, prefill_source: fromMaster ? 'race_master' : (pref ? 'sca_response' : 'none') };
+    return { survey_id:sid, Race_ID:String((r[i.Race_ID] ?? '')), Race_Name:String((r[i.Race_Name] ?? '')), Year:String((r[i.Year] ?? '')), Held:String((r[i.Held] ?? '')), Participants_existing:String((r[i.Participants_existing] ?? '')), Finishers_existing:String((r[i.Finishers_existing] ?? '')), Men_percent_existing:String((r[i.Men_percent_existing] ?? '')), Men50_percent_existing:String((r[i.Men50_percent_existing] ?? '')), Men60_percent_existing:String((r[i.Men60_percent_existing] ?? '')), sca_occurred_prefill: pref, prefill_source: fromMaster ? 'race_master' : (pref ? 'sca_response' : 'none') };
   });
 }
 function normalizeScaPrefill_(v) {
