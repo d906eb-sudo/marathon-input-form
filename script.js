@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoYIi--UseNsLM0TkSOm50EBq25RpXVTEWFEL2dvorz7LLCJYPmrsOlgMvj3ykyZXqsw/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2npA7iA4mnhKPalNnkCfrvuiJA9JtkF7BgwZo51sw_KVHYuawENBqtHzcuCSWUOambA/exec";
 const state = { raceId: null, token: null, races: [] };
 const $ = (id) => document.getElementById(id), show=(id)=>$(id).classList.remove('hidden'), hide=(id)=>$(id).classList.add('hidden');
 const fmt=(v)=> (v===undefined||v===null||v==="")?"未入力":String(v);
