@@ -19,3 +19,7 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 .badge-red{background:#f9d7d9;color:#8b1d22}
 .badge-blue{background:#d8e9ff;color:#134a9e}
 .badge-green{background:#dff3df;color:#1f6f2e}
+
+/* 外部導線ボタンがある版でも、青/緑ボタンを左寄せで横並び固定 */
+.buttons{display:flex;justify-content:flex-start;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.buttons .btn{width:auto;flex:0 0 auto}
