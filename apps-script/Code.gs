@@ -35,18 +35,49 @@ function doPost(e) {
     const ss = SpreadsheetApp.openById(SHEET_ID);
     const raceSheet = ss.getSheetByName(SHEET_RACE_RESPONSE);
     const scaSheet = ss.getSheetByName(SHEET_SCA_RESPONSE);
+    const raceRowBySurvey = latestRowIndexBySurvey_(raceSheet);
+    const scaRowBySurvey = latestRowIndexBySurvey_(scaSheet);
 
     responses.forEach((r) => {
       const base = validMap[r.survey_id];
       if (!base) return;
-      raceSheet.appendRow([now, base.survey_id, base.Race_ID, base.Race_Name, base.Year, r.Held || base.Held, r.confirmed_existing_data ? 'true' : 'false', r.Participants_existing || base.Participants_existing, r.Participants_final || base.Participants_existing, r.Finishers_existing || base.Finishers_existing, r.Finishers_final || base.Finishers_existing, r.Men_percent_existing || base.Men_percent_existing, r.Men_percent_final || base.Men_percent_existing, r.Men50_percent_existing || base.Men50_percent_existing, r.Men50_percent_final || base.Men50_percent_existing, r.Men60_percent_existing || base.Men60_percent_existing, r.Men60_percent_final || base.Men60_percent_existing, r.respondent_notes || '', r.contact_affiliation || (body.contact && body.contact.affiliation) || '', r.contact_name || (body.contact && body.contact.name) || '', r.contact_email || (body.contact && body.contact.email) || '', r.contact_phone || (body.contact && body.contact.phone) || '']);
-      scaSheet.appendRow([now, base.survey_id, base.Race_ID, base.Race_Name, base.Year, r.sca_occurred ? 'true' : 'false', r.sca_count || '', r.aed_used || '', r.rosc || '', r.death || '', r.sca_notes || '']);
+      const raceRow = [now, base.survey_id, base.Race_ID, base.Race_Name, base.Year, r.Held || base.Held, r.confirmed_existing_data ? 'true' : 'false', r.Participants_existing || base.Participants_existing, r.Participants_final || base.Participants_existing, r.Finishers_existing || base.Finishers_existing, r.Finishers_final || base.Finishers_existing, r.Men_percent_existing || base.Men_percent_existing, r.Men_percent_final || base.Men_percent_existing, r.Men50_percent_existing || base.Men50_percent_existing, r.Men50_percent_final || base.Men50_percent_existing, r.Men60_percent_existing || base.Men60_percent_existing, r.Men60_percent_final || base.Men60_percent_existing, r.respondent_notes || '', r.contact_affiliation || (body.contact && body.contact.affiliation) || '', r.contact_name || (body.contact && body.contact.name) || '', r.contact_email || (body.contact && body.contact.email) || '', r.contact_phone || (body.contact && body.contact.phone) || ''];
+      const scaRow = [now, base.survey_id, base.Race_ID, base.Race_Name, base.Year, r.sca_occurred ? 'true' : 'false', r.sca_count || '', r.aed_used || '', r.rosc || '', r.death || '', r.sca_notes || ''];
+
+      if (raceRowBySurvey[base.survey_id]) {
+        raceSheet.getRange(raceRowBySurvey[base.survey_id], 1, 1, raceRow.length).setValues([raceRow]);
+      } else {
+        raceSheet.appendRow(raceRow);
+      }
+
+      if (scaRowBySurvey[base.survey_id]) {
+        scaSheet.getRange(scaRowBySurvey[base.survey_id], 1, 1, scaRow.length).setValues([scaRow]);
+      } else {
+        scaSheet.appendRow(scaRow);
+      }
     });
 
     return jsonOutput({ ok: true });
   } catch (error) {
     return jsonOutput({ ok: false, error: 'サーバーエラー: ' + error.message });
   }
+}
+
+
+function latestRowIndexBySurvey_(sheet) {
+  if (!sheet) return {};
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) return {};
+  const h = values[0];
+  const iSurvey = findHeaderIndex_(h, ['survey_id', 'Survey_ID', 'surveyId']);
+  if (iSurvey < 0) return {};
+  const out = {};
+  for (let r = 1; r < values.length; r++) {
+    const sid = String(values[r][iSurvey] || '').trim();
+    if (!sid) continue;
+    out[sid] = r + 1; // sheet row number
+  }
+  return out;
 }
 
 function latestScaBySurvey_() {
