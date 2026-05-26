@@ -1,9 +1,9 @@
  (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
 diff --git a/index.html b/index.html
-index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..c66ad8dcdf9e18284862dec826111681cfe47471 100644
+index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..3855529711d64c3a615e45308a70bcc030483923 100644
 --- a/index.html
 +++ b/index.html
-@@ -1,93 +1,72 @@
+@@ -1,93 +1,86 @@
  <!DOCTYPE html>
  <html lang="ja">
  <head>
@@ -72,6 +72,8 @@ index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..c66ad8dcdf9e18284862dec826111681
 +    .note { margin-top: 24px; font-size: 0.95rem; color: #555; }
 +    ul { padding-left: 1.2em; }
 +    .guide p { margin: 0.5em 0; }
++    .contact-form input { width: 100%; max-width: 520px; padding: 10px; border: 1px solid #cfd7e3; border-radius: 8px; }
++    .contact-form p { margin: 10px 0; }
    </style>
  </head>
  <body>
@@ -88,11 +90,6 @@ index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..c66ad8dcdf9e18284862dec826111681
 +      <p>以下の説明をご確認のうえ、ご回答をお願いいたします。</p>
  
 -    <h2>回答の流れ</h2>
--    <ul>
--      <li>まず「心肺停止発生確認フォーム」にご回答ください。</li>
--      <li>次に、「大会情報入力シート」にアクセスし、未入力項目をご記入ください。すでに以前の調書でご回答いただいた情報はシートに反映しております。</li>
--      <li>不明な項目がある場合は、分かる範囲でご回答ください。後日確認させていただく場合があります。</li>
--    </ul>
 +      <h2>1⃣大会参加者数について</h2>
 +      <p>参加者数はスタートラインを超えたランナーの数で、申し込み人数（エントリー数）ではありません。</p>
 +      <ul>
@@ -101,11 +98,7 @@ index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..c66ad8dcdf9e18284862dec826111681
 +        <li>すでに入力済みのデータは過去にご報告いただいたデータ、ないしrunnet.jpの記録から取得しています。</li>
 +        <li>入力済みデータが間違っている場合は、修正ボタンを押して数値を上書き下さい。</li>
 +      </ul>
- 
--    <div class="buttons">
--      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScC1JpqapVuZKqzz8RGUNJ37VHDKwkx1Bv8M7r-KJExQn-Flw/viewform" target="_blank" rel="noopener noreferrer">
--        心肺停止発生確認フォーム
--      </a>
++
 +      <h2>2⃣心肺停止の定義</h2>
 +      <p>レース中またはフィニッシュ直後に急に倒れ、意識消失を伴い、①胸骨圧迫（心臓マッサージ）を要した、または②AEDによる解析（装着・作動を含む）が行われた症例とします。</p>
 +      <ul>
@@ -127,15 +120,34 @@ index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..c66ad8dcdf9e18284862dec826111681
 +        <li>非公認大会は解析対象外としております。</li>
 +        <li>2020年4月～2022年3月の大会は解析対象外としていますが、開催状況の確認のためご回答ください。</li>
 +      </ul>
- 
--      <a class="btn secondary" href="https://docs.google.com/spreadsheets/d/1odpbX4hhhHCs2LDNNUtMCnBwJmexDnOCWH2wNno1wRc/edit?gid=1136053637#gid=1136053637" target="_blank" rel="noopener noreferrer">
--        大会情報入力シート
--      </a>
++
 +      <h2>4⃣フォーム回答についてのお問い合わせ</h2>
 +      <p>日本陸連医事委員<br>加藤 穣（かとう じょう）<br>email: d906eb@yahoo.co.jp</p>
 +    </div>
 +
-+    <div class="buttons">
++
++    <h2>回答後確認のための連絡先</h2>
+     <ul>
+-      <li>まず「心肺停止発生確認フォーム」にご回答ください。</li>
+-      <li>次に、「大会情報入力シート」にアクセスし、未入力項目をご記入ください。すでに以前の調書でご回答いただいた情報はシートに反映しております。</li>
+-      <li>不明な項目がある場合は、分かる範囲でご回答ください。後日確認させていただく場合があります。</li>
++      <li>アンケート回答後、内容確認が必要な場合に連絡するための情報です。</li>
+     </ul>
++    <div class="contact-form">
++      <p><label>所属<br><input id="contact-affiliation" type="text" placeholder="例：○○マラソン大会事務局"></label></p>
++      <p><label>名前<br><input id="contact-name" type="text" placeholder="例：山田 太郎"></label></p>
++      <p><label>連絡先（Eメールアドレス）<br><input id="contact-email" type="email" placeholder="example@example.com"></label></p>
++      <p><label>電話番号<br><input id="contact-phone" type="tel" placeholder="例：090-1234-5678"></label></p>
++    </div>
+ 
+     <div class="buttons">
+-      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScC1JpqapVuZKqzz8RGUNJ37VHDKwkx1Bv8M7r-KJExQn-Flw/viewform" target="_blank" rel="noopener noreferrer">
+-        心肺停止発生確認フォーム
+-      </a>
+-
+-      <a class="btn secondary" href="https://docs.google.com/spreadsheets/d/1odpbX4hhhHCs2LDNNUtMCnBwJmexDnOCWH2wNno1wRc/edit?gid=1136053637#gid=1136053637" target="_blank" rel="noopener noreferrer">
+-        大会情報入力シート
+-      </a>
 +      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScC1JpqapVuZKqzz8RGUNJ37VHDKwkx1Bv8M7r-KJExQn-Flw/viewform" target="_blank" rel="noopener noreferrer">心肺停止発生確認フォーム</a>
 +      <a class="btn secondary" href="https://docs.google.com/spreadsheets/d/1odpbX4hhhHCs2LDNNUtMCnBwJmexDnOCWH2wNno1wRc/edit?gid=1136053637#gid=1136053637" target="_blank" rel="noopener noreferrer">大会情報入力シート</a>
      </div>
