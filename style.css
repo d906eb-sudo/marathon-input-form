@@ -8,23 +8,14 @@ input,select,textarea{width:100%;padding:8px;border:1px solid var(--border);bord
 .seg{display:inline-flex;gap:4px;white-space:nowrap}.seg .btn{padding:7px 10px;font-size:13px}
 .detail{margin-top:6px;padding:8px;border:1px dashed var(--border);border-radius:8px;background:#fcfdff}.hidden{display:none!important}.error{color:var(--danger);margin-top:8px}.button-row{display:flex;gap:8px}
 @media(max-width:767px){th,td{font-size:13px;padding:6px}.button-row{flex-direction:column}}
-
 .notice{border:1px solid var(--border);background:#fbfcfe;border-radius:8px;padding:10px;margin:8px 0}.notice ul{margin:6px 0 0 18px;padding:0}.notice li{margin:6px 0;line-height:1.5}
-
 .cell-edit{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center}.cell-btn{padding:5px 8px;font-size:12px;white-space:nowrap}
-
 .held-row td{background:#fff3b0 !important;font-weight:700 !important}
-
-
-.existing-val{color:#c62828 !important;font-weight:700 !important}
-
+.missing-val{color:#c62828 !important;font-weight:700 !important}
 .case-box{border:1px solid var(--border);padding:8px;border-radius:8px;margin:8px 0;background:#fff}
-
 .yes-btn.active{background:#c62828 !important;color:#fff !important}
-
 .prefill-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2f6;font-weight:700;font-size:13px}
 .seg .btn{min-width:60px}
-
 .badge-red{background:#f9d7d9;color:#8b1d22}
 .badge-blue{background:#d8e9ff;color:#134a9e}
 .badge-green{background:#dff3df;color:#1f6f2e}
