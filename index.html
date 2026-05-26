@@ -1,9 +1,9 @@
  (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
 diff --git a/index.html b/index.html
-index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..3855529711d64c3a615e45308a70bcc030483923 100644
+index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..9bc99b44cb96d666dbbc1e5780e9531b6fc62642 100644
 --- a/index.html
 +++ b/index.html
-@@ -1,93 +1,86 @@
+@@ -1,93 +1,87 @@
  <!DOCTYPE html>
  <html lang="ja">
  <head>
@@ -148,7 +148,8 @@ index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..3855529711d64c3a615e45308a70bcc0
 -      <a class="btn secondary" href="https://docs.google.com/spreadsheets/d/1odpbX4hhhHCs2LDNNUtMCnBwJmexDnOCWH2wNno1wRc/edit?gid=1136053637#gid=1136053637" target="_blank" rel="noopener noreferrer">
 -        大会情報入力シート
 -      </a>
-+      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScC1JpqapVuZKqzz8RGUNJ37VHDKwkx1Bv8M7r-KJExQn-Flw/viewform" target="_blank" rel="noopener noreferrer">心肺停止発生確認フォーム</a>
++      <a id="start-login" class="btn" href="login.html">ログイン画面へ</a>
++      <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScC1JpqapVuZKqzz8RGUNJ37VHDKwkx1Bv8M7r-KJExQn-Flw/viewform" target="_blank" rel="noopener noreferrer">心肺停止発生確認フォーム（外部）</a>
 +      <a class="btn secondary" href="https://docs.google.com/spreadsheets/d/1odpbX4hhhHCs2LDNNUtMCnBwJmexDnOCWH2wNno1wRc/edit?gid=1136053637#gid=1136053637" target="_blank" rel="noopener noreferrer">大会情報入力シート</a>
      </div>
  
@@ -156,7 +157,7 @@ index c4d56bf0a884943d5c9d180f5116f2dbeeb15814..3855529711d64c3a615e45308a70bcc0
 -      ※ フォームおよび入力シートへのアクセス方法は、送付文書の案内に従ってください。<br>
 -      ※ ご不明な点がある場合は、案内文書記載の連絡先までお問い合わせください。
 -    </p>
-+    <p class="note">※ 画面反映に差分がある場合は、Apps Scriptの再デプロイ後にブラウザのハードリロードを実施してください。</p>
++    <p class="note">※ 本サイトでの入力は、まずログイン画面から進んでください。<br>※ 画面反映に差分がある場合は、Apps Scriptの再デプロイ後にブラウザのハードリロードを実施してください。</p>
    </div>
  </body>
  </html>
