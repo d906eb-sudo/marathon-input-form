@@ -139,3 +139,71 @@ function normalizeScaPrefill_(v) {
 function jsonOutput(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
+
+
+/**
+ * race_master に 2006～2010 年の集約行を一括追加する管理者用関数。
+ * - survey_id: <Race_ID>_2006_2010
+ * - Year: 2006～2010
+ * - token / Race_ID / Race_Name は同一Race_IDの既存行から継承
+ * - 既に同じ survey_id が存在する場合は追加しない
+ */
+function seedLegacy2006To2010Rows_() {
+  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_MASTER);
+  if (!sheet) throw new Error('race_master シートが見つかりません');
+
+  const values = sheet.getDataRange().getValues();
+  if (values.length < 2) throw new Error('race_master にデータがありません');
+
+  const h = values[0];
+  const iSurvey = findHeaderIndex_(h, ['survey_id', 'Survey_ID', 'surveyId']);
+  const iToken = findHeaderIndex_(h, ['token', 'Token']);
+  const iRaceId = findHeaderIndex_(h, ['Race_ID', 'race_id', 'RaceId']);
+  const iRaceName = findHeaderIndex_(h, ['Race_Name', 'race_name', 'RaceName']);
+  const iYear = findHeaderIndex_(h, ['Year', 'year']);
+  const iHeld = findHeaderIndex_(h, ['Held', 'held', '開催状況']);
+
+  if ([iSurvey, iToken, iRaceId, iRaceName, iYear].some((x) => x < 0)) {
+    throw new Error('race_master の必須ヘッダ（survey_id/token/Race_ID/Race_Name/Year）が不足しています');
+  }
+
+  const existingSurvey = {};
+  const raceBase = {};
+
+  values.slice(1).forEach((r) => {
+    const sid = String(r[iSurvey] || '').trim();
+    const rid = String(r[iRaceId] || '').trim();
+    if (sid) existingSurvey[sid] = true;
+    if (!rid) return;
+    if (!raceBase[rid]) {
+      raceBase[rid] = {
+        token: String(r[iToken] || '').trim(),
+        raceName: String(r[iRaceName] || '').trim()
+      };
+    }
+  });
+
+  const newRows = [];
+  Object.keys(raceBase).forEach((rid) => {
+    const sid = rid + '_2006_2010';
+    if (existingSurvey[sid]) return;
+
+    const row = new Array(h.length).fill('');
+    row[iSurvey] = sid;
+    row[iToken] = raceBase[rid].token;
+    row[iRaceId] = rid;
+    row[iRaceName] = raceBase[rid].raceName;
+    row[iYear] = '2006～2010';
+    if (iHeld >= 0) row[iHeld] = '開催';
+    newRows.push(row);
+  });
+
+  if (!newRows.length) {
+    Logger.log('追加対象なし（すべて既存）');
+    return;
+  }
+
+  sheet.getRange(sheet.getLastRow() + 1, 1, newRows.length, h.length).setValues(newRows);
+  Logger.log('追加行数: ' + newRows.length);
+}
