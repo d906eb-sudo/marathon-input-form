@@ -6,30 +6,76 @@
   <title>ログイン | マラソン大会心肺停止調査</title>
   <style>
     body { font-family: Arial, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif; margin:0; background:#f7f8fa; color:#222; }
-    .wrap { max-width: 520px; margin: 56px auto; background:#fff; border-radius:12px; padding:28px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
-    h1 { margin: 0 0 16px; font-size: 1.6rem; }
-    p { margin: 0 0 10px; }
+    .wrap { max-width: 920px; margin: 40px auto; background:#fff; border-radius:12px; padding:28px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
+    h1 { margin: 0 0 16px; font-size: 1.9rem; }
+    h2 { margin: 22px 0 10px; font-size: 1.2rem; border-left:5px solid #1f5aa6; padding-left:10px; }
+    p { margin: 0 0 10px; line-height: 1.8; }
+    ul { margin: 8px 0 16px 1.2em; padding: 0; }
+    li { margin: 6px 0; line-height: 1.7; }
     label { font-weight: 700; display:block; margin: 14px 0 6px; }
     input { width:100%; box-sizing:border-box; padding:10px; border:1px solid #cfd7e3; border-radius:8px; font-size:16px; }
     button { margin-top:18px; width:100%; padding:12px; border:none; border-radius:8px; color:#fff; background:#1f5aa6; font-weight:700; cursor:pointer; }
-    .note { margin-top: 14px; font-size: .92rem; color:#555; }
+    .note { margin-top: 14px; font-size: .95rem; color:#555; }
     .error { color:#c62828; margin-top:12px; display:none; }
+    .login-box { margin-top: 22px; padding-top: 14px; border-top: 1px solid #e2e6ea; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>ログイン</h1>
-    <p>IDとパスワードを入力してください。</p>
+    <h1>マラソン大会心肺停止調査</h1>
 
-    <label for="race-id">ID</label>
-    <input id="race-id" type="text" autocomplete="username" placeholder="例: TOKA">
+    <p>本ページは、日本陸上競技連盟医事委員会関連の調査において、各大会の心肺停止発生状況および大会基本情報をご回答いただくための案内ページです。</p>
+    <p>本アンケート調査は、陸連公認マラソン大会における心肺停止事例を収集し、リスクの高い大会の特徴を明らかにすることを目的としています。</p>
+    <p>以下の説明をご確認のうえ、ご回答をお願いいたします。</p>
 
-    <label for="token">パスワード</label>
-    <input id="token" type="password" autocomplete="current-password" placeholder="パスワード を入力">
+    <h2>1⃣大会参加者数について</h2>
+    <p>参加者数はスタートラインを超えたランナーの数で、申し込み人数（エントリー数）ではありません。</p>
+    <ul>
+      <li>男性（50歳超男性割合、60歳超男性割合含む）の割合は100％単位でご記入ください（小数点第一位）。</li>
+      <li>割合は参加者数に対する割合ですが、<u>完走者数でも代用可能です（例：男性完走者数／完走者数）。</u></li>
+      <li>すでに入力済みのデータは過去にご報告いただいたデータ、ないしrunnet.jpの記録から取得しています。</li>
+      <li>入力済みデータが間違っている場合は、修正ボタンを押して数値を上書き下さい。</li>
+    </ul>
 
-    <button id="login-btn" type="button">ログインして回答画面へ</button>
-    <p id="login-error" class="error"></p>
-    <p class="note">※ 認証情報はこのブラウザのセッション領域に保存されます。共有PCでは利用後にブラウザを終了してください。</p>
+    <h2>2⃣心肺停止の定義</h2>
+    <p>レース中またはフィニッシュ直後に急に倒れ、意識消失を伴い、①胸骨圧迫（心臓マッサージ）を要した、または②AEDによる解析（装着・作動を含む）が行われた症例とします。</p>
+    <ul>
+      <li><u>未報告のレースについてご回答ください</u>（すでに回答済みレースで間違いがある場合も修正可能です）。</li>
+      <li>胸骨圧迫を行わず自然に回復した症例は含みません。</li>
+      <li>AED装着前に胸骨圧迫のみで回復した症例は含みます。</li>
+      <li>判断に迷う症例は疑いも含めてご回答ください。</li>
+      <li>本フォームの回答内容は、研究担当者以外が個別に閲覧することはありません。</li>
+      <li>アンケート結果をもとに後日確認のメールをする場合があります。</li>
+    </ul>
+
+    <h2>3⃣対象大会期間</h2>
+    <p>フルマラソン：2011年4月1日～2026年3月31日<br>ハーフマラソン：2014年4月1日～2026年3月31日</p>
+    <ul>
+      <li>便宜上、30km大会はハーフマラソンとしてご回答ください。</li>
+      <li>同一大会でフルとハーフが同時開催された場合は、別大会としてご回答ください。</li>
+      <li>同日開催の3㎞、5㎞、10㎞、クオーターマラソン、20㎞レースは対象外になります。</li>
+      <li>非公認大会は解析対象外としておりますが、公認大会にも関わらず解析対象外となっている場合は修正欄に数値を入力してください。</li>
+      <li>過去5大会内の心肺停止の発生がリスクになるかどうか確認するため、<strong>心肺停止の有無はフルは2006年～2010年、ハーフは2009年～2013年</strong>に開催された大会についてもご回答ください。</li>
+      <li>2020年4月～2022年3月の大会は解析対象外としていますが、開催状況の確認のためご回答ください。</li>
+    </ul>
+
+    <h2>4⃣フォーム回答についてご質問がある場合、下記までご連絡下さい。</h2>
+    <p>日本陸連医事委員<br>加藤 穣（かとう じょう）<br>email: d906eb@yahoo.co.jp</p>
+
+    <div class="login-box">
+      <h2>ログイン</h2>
+      <p>IDとパスワードを入力してください。</p>
+
+      <label for="race-id">ID</label>
+      <input id="race-id" type="text" autocomplete="username" placeholder="例: TOKA">
+
+      <label for="token">パスワード</label>
+      <input id="token" type="password" autocomplete="current-password" placeholder="パスワード を入力">
+
+      <button id="login-btn" type="button">ログインして回答画面へ</button>
+      <p id="login-error" class="error"></p>
+      <p class="note">※ 認証情報はこのブラウザのセッション領域に保存されます。共有PCでは利用後にブラウザを終了してください。</p>
+    </div>
   </div>
 
   <script src="login.js"></script>
